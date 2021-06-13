@@ -4,7 +4,7 @@ import "fmt"
 
 func main() {
 
-	str := "aabbccccbbddddeeeefnnghmpqswkkkkwookmkskmkqkqwwmkks"
+	str := "aabbcccccbbddddeeeefnnghmpqswkkkkwookmkskmkqkqwwmkks"
 	fmt.Println(max_repeat_char(str))
 }
 
@@ -26,6 +26,9 @@ func max_repeat_char(chars string) string {
 	max_repeat := ""
 
 	local_max_repeat := "-"
+
+	// local will reset for every satisfyiable subarray
+	// maximum will reset for only the max out of every satisfyiable subarray
 
 	for i := 0; i < len(chars); i++ {
 
