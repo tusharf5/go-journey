@@ -6,7 +6,8 @@ import (
 )
 
 func main() {
-	arr := []int{-1, 2, -3, -200, 4, -25, -29, 31, 33, 44, -44, -44, 44, 2, 3, 4, -4, 150, -200, -20, 400}
+	arr := []int{-1, 2, -3, 4, -25, -29, 31, 33, 44, -44, -44}
+	arr = append(arr, 3)
 	result := max_subarray_sum(arr)
 	fmt.Println(result)
 }

@@ -3,7 +3,7 @@ package main
 import "fmt"
 
 func main() {
-	str := "aabbcccccbbddddeeeefnnghmpqswkkkkwookmkskmkqkqwwmkks"
+	str := "aabbccccbbddddeeeefnnghmpqswkkkkwookmkskmkqkqwwmkks"
 	fmt.Println(max_non_repeat(str))
 }
 
@@ -11,11 +11,12 @@ func max_non_repeat(word string) string {
 
 	best_subarray := ""
 
+	// best should be checked everytime current is modifed
 	current_subarray := ""
 
 	current_subarray_key_map := make(map[string]bool)
 
-	// curr should contain what's at tht end
+	// curr should contain what's at tht current end
 
 	for i := 0; i < len(word); i++ {
 
