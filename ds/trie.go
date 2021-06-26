@@ -1,5 +1,5 @@
 package ds
 
-func Stack() {
+func Trie() {
 
 }

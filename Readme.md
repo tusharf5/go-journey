@@ -1,3 +1,3 @@
 # go-journey
 
-As I learn my second primary language :)
+> Within a package, code can refer to any identifier (name) defined within, while clients of the package may only reference the package's exported types, functions, constants, and variables.
