@@ -7,12 +7,12 @@ import (
 )
 
 func main() {
-	fmt.Println(str.FirstNonRepeat("sadjbaskjdkasdnkldqjwiejqoijhfohsdnfjksndqpowjqoiewhfowsnqwpdo"))
-	fmt.Println(str.FirstNonRepeat("abcdeffghijkklmnnopqwrsjhiro"))
-	fmt.Println(str.FirstNonRepeat("nnnnccccbbbddddjjjkkkllsssppooiieewuuuffhhskkq"))
-	fmt.Println(str.FirstNonRepeat("nnnnccccbbbddddjjjxkkkllsssppooiieewuuuffhhskkq"))
-	fmt.Println(str.FirstNonRepeat("abmmmcccnndjjkskkkslllslldkjdfjjjfjjja"))
-	fmt.Println(str.FirstNonRepeat("l"))
+	fmt.Println(str.FirstNonRepeat("sadjbaskjbdkasdnkldqjwiejqoijhfohsdnfjksndqpowjqoiewhfowsnqwpdo"))
+	fmt.Println(str.FirstNonRepeat("abcdeffghijkklmnnopqwrsjhairo"))
+	fmt.Println(str.FirstNonRepeat("nnnnccccbbbddddwjjjkkkllsssppooiieewuuuffhhskkq"))
+	fmt.Println(str.FirstNonRepeat("nnnnccccbbbddddjjjxkkkllsssppooiixeewuuuffhhskkq"))
+	fmt.Println(str.FirstNonRepeat("abmmmcccnndjjkskkkslllsblldkjdfjjjfjjja"))
+	fmt.Println(str.FirstNonRepeat("ll"))
 
 	minheap := ds.GenMinHeap()
 
