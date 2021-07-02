@@ -31,4 +31,16 @@ func main() {
 
 	fmt.Println(minheap)
 
+	trie := ds.NewTrie()
+
+	trie.AddWord("Aeroplane")
+	trie.AddWord("Alphabet")
+	trie.AddWord("Tushar")
+	trie.AddWord("Garima")
+	trie.AddWord("Garry")
+	trie.AddWord("Problem")
+	trie.AddWord("Problemo")
+
+	trie.Print()
+
 }
