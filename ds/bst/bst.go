@@ -1,4 +1,4 @@
-package ds
+package bst
 
 func BinarySearchTree() {
 

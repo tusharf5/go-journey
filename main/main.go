@@ -3,7 +3,9 @@ package main
 import (
 	"fmt"
 	"learn/algorithm/str"
-	"learn/ds"
+	"learn/ds/heap"
+	"learn/ds/hmap"
+	"learn/ds/trie"
 )
 
 func main() {
@@ -14,7 +16,7 @@ func main() {
 	fmt.Println(str.FirstNonRepeat("abmmmcccnndjjkskkkslllsblldkjdfjjjfjjja"))
 	fmt.Println(str.FirstNonRepeat("ll"))
 
-	minheap := ds.GenMinHeap()
+	minheap := heap.GenMinHeap()
 
 	minheap.MinHeapInsert(0)
 	minheap.MinHeapInsert(20)
@@ -31,7 +33,7 @@ func main() {
 
 	fmt.Println(minheap)
 
-	trie := ds.NewTrie()
+	trie := trie.NewTrie()
 
 	trie.AddWord("Aeroplane")
 	trie.AddWord("Alphabet")
@@ -42,5 +44,16 @@ func main() {
 	trie.AddWord("Problemo")
 
 	trie.Print()
+
+	hasmap := hmap.New()
+
+	hasmap.Set("kely", "value")
+	hasmap.Set("1", 2)
+	hasmap.Set("asd3", "my value")
+
+	fmt.Println()
+	fmt.Println(hasmap.Get("kely"))
+	fmt.Println(hasmap.Get("1"))
+	fmt.Println(hasmap.Get("asd3"))
 
 }

@@ -1,4 +1,4 @@
-package ds
+package heap
 
 type MinHeap struct {
 	arr []HeapNode
