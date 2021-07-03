@@ -3,6 +3,7 @@ package main
 import (
 	"fmt"
 	"learn/algorithm/str"
+	"learn/ds/bst"
 	"learn/ds/heap"
 	"learn/ds/hmap"
 	"learn/ds/trie"
@@ -55,5 +56,15 @@ func main() {
 	fmt.Println(hasmap.Get("kely"))
 	fmt.Println(hasmap.Get("1"))
 	fmt.Println(hasmap.Get("asd3"))
+
+	bstree := bst.New()
+	bstree.Add(1)
+	bstree.Add(8)
+	bstree.Add(10)
+	bstree.Add(2)
+	bstree.Add(5)
+	bstree.Add(9)
+
+	fmt.Println(bstree)
 
 }
