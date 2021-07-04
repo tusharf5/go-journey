@@ -9,6 +9,20 @@ import (
 	"learn/ds/trie"
 )
 
+type MMM struct {
+	a string
+	b int
+	c map[string]int
+	d interface{}
+	e func()
+	f bool
+	g rune
+	h byte
+	i []byte
+	j []string
+	k []bool
+}
+
 func main() {
 	fmt.Println(str.FirstNonRepeat("sadjbaskjbdkasdnkldqjwiejqoijhfohsdnfjksndqpowjqoiewhfowsnqwpdo"))
 	fmt.Println(str.FirstNonRepeat("abcdeffghijkklmnnopqwrsjhairo"))
@@ -66,5 +80,22 @@ func main() {
 	bstree.Add(9)
 
 	fmt.Println(bstree)
+
+	ss := new(MMM)
+	fmt.Println(ss.a)
+	fmt.Println(ss.b)
+	fmt.Println(ss.c == nil)
+	fmt.Println(ss.d == nil)
+	fmt.Println(ss.e == nil)
+	fmt.Println(ss.f)
+	fmt.Println(ss.g)
+	fmt.Println(ss.h)
+	fmt.Println(ss.i == nil)
+	fmt.Println(ss.j == nil)
+	fmt.Println(ss.k == nil)
+	fmt.Printf("%+v\n", ss)
+
+	kk := MMM{}
+	fmt.Printf("%+v\n", kk)
 
 }

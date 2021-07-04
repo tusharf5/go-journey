@@ -51,9 +51,6 @@ func addNode(newNode *Node, currentNode *Node) {
 }
 
 func (d *BTree) Traverse() {
-	arr := make([]int, 0)
-
-	arr = append(arr, d.root.data)
 
 	// curr
 
