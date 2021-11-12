@@ -24,6 +24,30 @@ type MMM struct {
 }
 
 func main() {
+	rt := trie.MakeRadixTree()
+	rt.Insert("J")
+	rt.Insert("Jimmy")
+	rt.Insert("Jim")
+	rt.Insert("Jim")
+	rt.Insert("Jimminson")
+	rt.Insert("Jimmz")
+	rt.Insert("Jimz")
+	rt.Insert("Tushar")
+	rt.Insert("Tush")
+	rt.Insert("Gappu")
+	rt.Insert("Garima")
+	rt.Insert("John")
+	rt.Traverse()
+	fmt.Println(rt.Match("Tushar"))
+	fmt.Println(rt.Match("Jimmy"))
+	fmt.Println(rt.Match("Garima"))
+	fmt.Println(rt.Match("Jimminson"))
+	fmt.Println(rt.Match("Bro"))
+	fmt.Println(rt.Match("Tusheee"))
+	fmt.Println(rt.Match("Jimmmz"))
+}
+
+func test() {
 	fmt.Println(str.FirstNonRepeat("sadjbaskjbdkasdnkldqjwiejqoijhfohsdnfjksndqpowjqoiewhfowsnqwpdo"))
 	fmt.Println(str.FirstNonRepeat("abcdeffghijkklmnnopqwrsjhairo"))
 	fmt.Println(str.FirstNonRepeat("nnnnccccbbbddddwjjjkkkllsssppooiieewuuuffhhskkq"))
