@@ -6,6 +6,7 @@ import (
 	"learn/ds/bst"
 	"learn/ds/heap"
 	"learn/ds/hmap"
+	"learn/ds/routertrie"
 	"learn/ds/trie"
 )
 
@@ -24,27 +25,47 @@ type MMM struct {
 }
 
 func main() {
-	rt := trie.MakeRadixTree()
-	rt.Insert("J")
-	rt.Insert("Jimmy")
-	rt.Insert("Jim")
-	rt.Insert("Jim")
-	rt.Insert("Jimminson")
-	rt.Insert("Jimmz")
-	rt.Insert("Jimz")
-	rt.Insert("Tushar")
-	rt.Insert("Tush")
-	rt.Insert("Gappu")
-	rt.Insert("Garima")
-	rt.Insert("John")
+	// rt := trie.MakeRadixTree()
+	// rt.Insert("/natscale/react-calendar/issues")
+	// rt.Insert("/pulls")
+	// rt.Insert("/pulls/mentioned")
+	// rt.Insert("/pulls/review-requested")
+	// rt.Insert("/pulls/assigned")
+	// rt.Insert("Jim")
+	// rt.Insert("Jimminson")
+	// rt.Insert("Jimmz")
+	// rt.Insert("Jimz")
+	// rt.Insert("Tushar")
+	// rt.Insert("Tush")
+	// rt.Insert("Gappu")
+	// rt.Insert("Garima")
+	// rt.Insert("John")
+	// rt.Traverse()
+	// fmt.Println(rt.Match("Tushar"))
+	// fmt.Println(rt.Match("Jimmy"))
+	// fmt.Println(rt.Match("Garima"))
+	// fmt.Println(rt.Match("Jimminson"))
+	// fmt.Println(rt.Match("Bro"))
+	// fmt.Println(rt.Match("Tusheee"))
+	// fmt.Println(rt.Match("/pulls/assigned"))
+	rt := routertrie.MakeRadixTree()
+	rt.Insert("/natscale/{repo}/issues")
+	rt.Insert("/pulls")
+	rt.Insert("pulls/mentioned")
+	rt.Insert("/pulls/mentioned/{name}/")
+	rt.Insert("/pulls/mentioned/{name}/bro")
+	rt.Insert("/pulls/review-requested")
+	rt.Insert("/pulls/assigned")
+
 	rt.Traverse()
-	fmt.Println(rt.Match("Tushar"))
-	fmt.Println(rt.Match("Jimmy"))
-	fmt.Println(rt.Match("Garima"))
-	fmt.Println(rt.Match("Jimminson"))
-	fmt.Println(rt.Match("Bro"))
-	fmt.Println(rt.Match("Tusheee"))
-	fmt.Println(rt.Match("Jimmmz"))
+	// fmt.Println(rt.Match("Tushar"))
+	// fmt.Println(rt.Match("Jimmy"))
+	// fmt.Println(rt.Match("Garima"))
+	// fmt.Println(rt.Match("Jimminson"))
+	// fmt.Println(rt.Match("Bro"))
+	// fmt.Println(rt.Match("Tusheee"))
+	fmt.Println(rt.Match("/pulls/assigned"))
+	fmt.Println(rt.Match("/pulls/mentioned/bruh"))
 }
 
 func test() {
