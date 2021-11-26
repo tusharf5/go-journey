@@ -12,6 +12,12 @@ type RTNode struct {
 	Children map[string]*RTNode `json:children`
 }
 
+type Match struct {
+	Path   string            `json:path`
+	Url    string            `json:url`
+	Params map[string]string `json:params`
+}
+
 type RadixTree struct {
 	Children map[string]*RTNode `json:children`
 }
@@ -26,20 +32,18 @@ type Part struct {
 	isStatic bool
 }
 
-func makePathToArray(s string) []*Part {
+func makeStringToParts(s string) []*Part {
 	arr := strings.Split(s, "/")
 	parts := make([]*Part, 0, len(arr))
-	check, _ := regexp.Compile("^{.+?}$")
+	check, _ := regexp.Compile("^{(.+?)}$")
 	for _, v := range arr {
 		if v == "" || v == "/" {
 			continue
 		}
 		if m := check.MatchString(v); m {
-			fmt.Println("Adding *")
-			parts = append(parts, &Part{name: v, value: "*", isStatic: false})
+			parts = append(parts, &Part{name: v[1 : len(v)-1], value: "*", isStatic: false})
 			continue
 		}
-		fmt.Println("Adding " + v)
 		parts = append(parts, &Part{name: v, value: v, isStatic: true})
 	}
 	return parts
@@ -49,7 +53,7 @@ func (t *RadixTree) Insert(s string) {
 
 	fmt.Println("Path", s, len(s))
 
-	parts := makePathToArray(s)
+	parts := makeStringToParts(s)
 
 	fmt.Println("Parts", len(parts))
 
@@ -70,10 +74,7 @@ func (t *RadixTree) Insert(s string) {
 
 func (n *RTNode) split(pivot int) {
 
-	// fmt.Println("Splitting " + n.Value)
 	s1, s2 := n.Value[:pivot], n.Value[pivot:]
-	// fmt.Println("Word 1 is " + s1)
-	// fmt.Println("Word 2 is " + s2)
 	newChildren := map[string]*RTNode{}
 
 	for k, v := range n.Children {
@@ -91,13 +92,10 @@ func (n *RTNode) split(pivot int) {
 
 	n.Value = s1
 	n.IsWord = false
-	// fmt.Println("Current node is " + n.Value)
-	// fmt.Println("Current node child is " + n.Children[string(s2[0])].Value)
 
 }
 
 func (n *RTNode) Insert(parts []*Part) {
-	// fmt.Println("Adding " + s + " to " + n.Value)
 
 	// time.Sleep(1 * time.Second)
 	// the new word atleast shares same prefix
@@ -105,9 +103,8 @@ func (n *RTNode) Insert(parts []*Part) {
 		n.Children = map[string]*RTNode{}
 	}
 
-	prefixLen, prefix := commonMatch(&n.Value, &parts)
+	prefixLen, prefix, _ := commonMatch(&n.Value, &parts)
 	splitNode := len(n.Value) > prefixLen
-	// fmt.Println("Prefix is " + prefix + " of length " + strconv.FormatInt(int64(prefixLen), 10))
 	// time.Sleep(1 * time.Second)
 
 	if splitNode {
@@ -125,7 +122,7 @@ func (n *RTNode) Insert(parts []*Part) {
 			n.Children[string(parts[prefixLen].value)].Insert(parts[prefixLen:])
 			return
 		} else {
-			// fmt.Println("Adding " + s[prefixLen:] + " left out as a new child")
+
 			// time.Sleep(1 * time.Second)
 			n.Children[string(parts[prefixLen].value)] = &RTNode{
 				IsWord: true,
@@ -152,7 +149,7 @@ func (n *RTNode) Insert(parts []*Part) {
 func isEqual(s1, s2 *[]*Part) bool {
 
 	if len(*s1) == len(*s2) {
-		for k, _ := range *s1 {
+		for k := range *s1 {
 			if (*(*s1)[k]).value != (*(*s2)[k]).value {
 				return false
 			}
@@ -163,28 +160,32 @@ func isEqual(s1, s2 *[]*Part) bool {
 	return false
 }
 
-func commonMatch(s1, s2 *[]*Part) (int, []*Part) {
+func commonMatch(trieNode, incoming *[]*Part) (clen int, parts []*Part, params map[string]string) {
+	params = map[string]string{}
 	prefix, max := -1, -1
-	if len(*s1) > len(*s2) {
-		max = len(*s2)
-	} else if len(*s2) > len(*s1) {
-		max = len(*s1)
+	if len(*trieNode) > len(*incoming) {
+		max = len(*incoming)
+	} else if len(*incoming) > len(*trieNode) {
+		max = len(*trieNode)
 	} else {
-		max = len(*s1)
+		max = len(*trieNode)
 	}
 
 	for i := 0; i < max; i++ {
-		if (*(*s1)[i]).value == (*(*s2)[i]).value {
+		if (*(*trieNode)[i]).value == (*(*incoming)[i]).value {
 			prefix = i
+		} else if (*(*trieNode)[i]).value == "*" {
+			prefix = i
+			params[(*(*trieNode)[i]).name] = (*(*incoming)[i]).value
 		} else {
 			break
 		}
 	}
 
 	if prefix >= 0 {
-		return (prefix + 1), (*s1)[:prefix+1]
+		return (prefix + 1), (*trieNode)[:prefix+1], params
 	} else {
-		return -1, nil
+		return -1, nil, params
 	}
 }
 
@@ -192,56 +193,86 @@ func (t *RadixTree) Delete() {
 
 }
 
-func (t *RadixTree) Match(s string) []string {
+func (t *RadixTree) MatchPath(s string) (found bool, match Match) {
 
-	parts := makePathToArray(s)
+	parts := makeStringToParts(s)
 
 	path := []*RTNode{}
+
 	_, ok := t.Children[string(parts[0].value)]
+
 	if !ok {
 		fmt.Println("Eearly exit")
-		return []string{}
+		return false, match
 	}
+
 	curr := t.Children[string(parts[0].value)]
+
+	if curr == nil {
+		curr = t.Children["*"]
+		if curr == nil {
+			return false, match
+		}
+	}
+
 	val := parts
+	match.Params = map[string]string{}
+
 	for {
-		matchlen, _ := commonMatch(&curr.Value, &val)
+		matchlen, _, p := commonMatch(&curr.Value, &val)
+
 		if matchlen <= 0 {
-
-			break
+			return false, match
 		}
+
 		if matchlen == len(val) {
-
 			path = append(path, curr)
+			for k, v := range p {
+				match.Params[k] = v
+			}
 			break
 		}
-		// fmt.Println("Curr is "+curr.Value, matchlen, string(val[matchlen]))
+
+		for k, v := range p {
+			match.Params[k] = v
+		}
+
 		path = append(path, curr)
-		curr, ok = curr.Children[string(val[matchlen].value)]
+
+		_, ok = curr.Children[string(val[matchlen].value)]
+
 		if !ok {
-			break
+			curr, ok = curr.Children["*"]
+			if !ok {
+				return false, match
+			}
+		} else {
+			curr = curr.Children[string(val[matchlen].value)]
 		}
 		val = val[matchlen:]
 	}
 
-	result := []string{}
+	match.Url = s
 
 	for _, v := range path {
 		nodeVal := ""
 		for _, v := range v.Value {
-			nodeVal = nodeVal + v.value
+			if v.isStatic {
+				nodeVal = nodeVal + v.value + "/"
+			} else {
+				nodeVal = nodeVal + "{" + v.name + "}" + "/"
+			}
 		}
-		fmt.Println("Node", nodeVal)
-		result = append(result, nodeVal)
+		match.Path = match.Path + nodeVal
 	}
 
-	return result
+	return true, match
 }
 
 func (t *RadixTree) Traverse() {
 	if t.Children != nil {
 		for k := range t.Children {
-			// fmt.Println("At Root" + " Going to " + k)
+
 			t.Children[k].Traverse(1)
 		}
 	}
@@ -258,9 +289,8 @@ func (rtn *RTNode) Traverse(pad int) {
 	fmt.Println()
 	if rtn.Children != nil {
 		for k := range rtn.Children {
-			// fmt.Println("At " + rtn.Value + " Going to " + k)
+
 			rtn.Children[k].Traverse(pad + 1)
 		}
 	}
-	// fmt.Println("Finished at " + rtn.Value)
 }
