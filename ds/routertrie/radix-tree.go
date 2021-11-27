@@ -51,16 +51,27 @@ func makeStringToParts(s string) []*Part {
 
 func (t *RadixTree) Insert(s string) {
 
-	fmt.Println("Path", s, len(s))
+	if len(s) == 0 {
+		return
+	}
 
 	parts := makeStringToParts(s)
-
-	fmt.Println("Parts", len(parts))
 
 	// if no root
 	if t.Children == nil {
 		t.Children = map[string]*RTNode{}
 	}
+
+	if len(parts) == 0 {
+		p := make([]*Part, 0, 1)
+		p = append(p, &Part{name: "/", value: "/", isStatic: true})
+		t.Children["/"] = &RTNode{
+			IsWord: true,
+			Value:  p,
+		}
+		return
+	}
+
 	if t.Children[(parts[0]).value] == nil {
 		node := &RTNode{
 			IsWord: true,
@@ -108,7 +119,6 @@ func (n *RTNode) Insert(parts []*Part) {
 	// time.Sleep(1 * time.Second)
 
 	if splitNode {
-		fmt.Println("Splitting")
 		// time.Sleep(1 * time.Second)
 		n.split(prefixLen)
 	}
@@ -117,7 +127,6 @@ func (n *RTNode) Insert(parts []*Part) {
 	if len(parts[prefixLen:]) > 0 {
 		// if there is a child for that, send it to em
 		if _, ok := n.Children[string(parts[prefixLen].value)]; ok {
-			fmt.Println("Pushing it to next node")
 			// time.Sleep(1 * time.Second)
 			n.Children[string(parts[prefixLen].value)].Insert(parts[prefixLen:])
 			return
@@ -135,13 +144,11 @@ func (n *RTNode) Insert(parts []*Part) {
 
 	// there are no characters left after the common prefix
 	if ok := isEqual(&prefix, &parts); ok {
-		fmt.Println("Exact match")
 		// time.Sleep(1 * time.Second)
 		n.IsWord = true
 		return
 	}
 
-	fmt.Println("NO CASE MATCHED")
 	// time.Sleep(1 * time.Second)
 
 }
@@ -195,22 +202,27 @@ func (t *RadixTree) Delete() {
 
 func (t *RadixTree) MatchPath(s string) (found bool, match Match) {
 
+	if len(s) == 0 {
+		return false, match
+	}
+
+	if _, ok := t.Children["/"]; ok && s == "/" {
+		match.Path = "/"
+		match.Url = "/"
+		return true, match
+	} else if _, ok := t.Children["/"]; !ok && s == "/" {
+		return false, match
+	}
+
 	parts := makeStringToParts(s)
 
 	path := []*RTNode{}
 
-	_, ok := t.Children[string(parts[0].value)]
+	curr, ok := t.Children[string(parts[0].value)]
 
 	if !ok {
-		fmt.Println("Eearly exit")
-		return false, match
-	}
-
-	curr := t.Children[string(parts[0].value)]
-
-	if curr == nil {
-		curr = t.Children["*"]
-		if curr == nil {
+		curr, ok = t.Children["*"]
+		if !ok {
 			return false, match
 		}
 	}
